@@ -30,8 +30,6 @@ project:
       file: chapters/05_remote_attestation.md
     - title: Three Pillars of Confidential Computing
       file: chapters/06_three_pillars.md
-    - title: Solution Stack
-      file: chapters/07_solution_stack.md
     - title: Confidential Containers (CoCo)
       file: chapters/09_confidential_containers.md
     - title: Trustee
