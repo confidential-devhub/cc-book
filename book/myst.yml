@@ -38,7 +38,7 @@ project:
       file: chapters/11_operational_aspects.md
     - title: Integrations & Ecosystem
       file: chapters/12_integrations.md
-    - title: Market Landscape
-      file: chapters/13_market_landscape.md
+    - title: References
+      file: chapters/13_references.md
 site:
   template: book-theme
