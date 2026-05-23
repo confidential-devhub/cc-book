@@ -1,13 +1,13 @@
 # Confidential Computing Deep Dive
 
-**Author:** Pradipta Banerjee, Engineer Lead — Confidential Containers  
-**Acknowledgements:** Ariel Adam, Christophe de Dinechin, Emanuele Esposito, Jens Freimann, Tobin Feldman-Fitzthum, Vitaly Kuznetsov, and many others.
+**Author:** Pradipta Banerjee, Project Maintainer — Confidential Containers  
+**Acknowledgements:** Ariel Adam, Christophe de Dinechin, Emanuele Esposito, Jens Freimann, Tobin Feldman-Fitzthum, Vitaly Kuznetsov, Magnus Kulke and many others in the community.
 
 ---
 
 ## About This Book
 
-This book is a comprehensive deep dive into **Confidential Computing** — one of the most important emerging areas in cloud security. It covers the theory, architecture, components, and real-world deployment patterns needed to understand and work with confidential computing systems.
+This book is a comprehensive deep dive into **Confidential Computing**. It covers the theory, architecture, components, and use cases to understand and work with confidential computing.
 
 The content is structured for engineers, architects, and security practitioners who want to understand:
 

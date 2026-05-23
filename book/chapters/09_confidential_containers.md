@@ -8,7 +8,7 @@ Confidential Containers — a generic term for containers deployed inside Truste
 
 ## CNCF Confidential Containers (CoCo) Project
 
-The CNCF CoCo project provides a common foundation for deploying containers inside VM- or process-based TEEs on any Kubernetes cluster, and includes Trustee — a remote attestation service based on IETF RATS.
+The CNCF CoCo project provides a common foundation for deploying containers inside VM (using [Kata Containers](https://katacontainers.io/)) on any Kubernetes cluster, and includes Trustee as the remote attestation service.
 
 ```{figure} ../images/page_57.png
 :alt: CNCF Confidential Containers Project overview
@@ -89,7 +89,6 @@ Following are the key CVM requirements for CoCo:
 
 1. Read-only rootfs with integrity protection (dm-verity/fs-verity + composefs)
 2. Memory-backed filesystem or LUKS-encrypted ephemeral disk for read-write storage (container images)
-3. Measured boot support.
 
 ### Read-Only Rootfs with Integrity Protection
 

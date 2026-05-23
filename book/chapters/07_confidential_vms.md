@@ -50,7 +50,11 @@ CVMs provide **workload confidentiality**. The data in use is isolated from high
 
 The hardware memory controller transparently encrypts all guest physical memory pages with a key held inside the CPU. The hypervisor sees only ciphertext when it accesses guest memory.
 
+AMD SEV-SNP uses a dedicated processor called AMD Secure Processor (ASP), also known as AMD Platform Security Processor or PSP, to manage its
+security features. ASP is an ARM-based processor separated from the main x86 cores but directly integrated into the CPU die, creating a hardware root-of-trust. The ASP securely manages SEV-SNP VM encryption keys and the reverse map table to ensure the integrity of the guest address translation.
 
+Intel introduces two new components: a new CPU operation mode Secure Arbitration Mode (SEAM), and special trusted software the TDX module. A Trust Domain (TD) is a virtual machine that runs in a secure environment under the control of the TDX
+module.
 
 **Data at rest** in a CVM also requires protection — the host controls storage access, so full disk encryption (e.g., LUKS) is mandatory for any sensitive data persisted to disk.
 
@@ -66,11 +70,11 @@ Secure Boot ensures only vendor-signed code executes during boot:
 
 ```{mermaid}
 flowchart LR
-    FW["UEFI Firmware\n(Root of Trust)"]
-    SH["Shim\nMicrosoft-signed\ncarries OS-vendor certs"]
-    BL["Bootloader\nGRUB / systemd-boot"]
-    KN["Kernel\nlockdown mode"]
-    MOD["Kernel Modules\nsigned only"]
+    FW["UEFI Firmware (Root of Trust)"]
+    SH["Shim (Signed OS-vendor certs)"]
+    BL["Bootloader (GRUB / systemd-boot)"]
+    KN["Kernel lockdown mode"]
+    MOD["Kernel Modules (signed only)"]
 
     FW -->|verifies| SH
     SH -->|verifies| BL
@@ -137,7 +141,7 @@ sequenceDiagram
 
     Tenant->>CVM: Request attestation
     CVM->>HW: Get attestation report
-    HW-->>CVM: Signed report (VCEK / IAK)
+    HW-->>CVM: Signed report
     CVM-->>Tenant: Attestation report
     Tenant->>Tenant: Verify report against AMD/Intel cert chain
     Tenant->>Tenant: Check measurements match expected values
@@ -148,28 +152,18 @@ sequenceDiagram
 
 ## Hardware Technologies
 
-With all three major CPU vendors supporting CVMs, they are expected to dominate the Confidential Computing landscape going forward.
+All major CPU vendors supports CVMs.
 
-| Vendor | Technology | Generation | Key Features |
-|---|---|---|---|
-| **AMD** | SEV-SNP | Current (EPYC Milan+) | Memory encryption + integrity; RMP table prevents remapping |
-| **AMD** | SEV-ES | Previous | Encrypted registers; no integrity |
-| **AMD** | SEV | Legacy | Memory encryption only |
-| **Intel** | TDX | Sapphire Rapids (4th Gen Xeon+) | Trust Domains; RTMR-based measurement; TDX Module |
-| **IBM Z** | Secure Execution | IBM Z / LinuxONE | Ultra-Violet guests; mainframe-grade isolation |
-| **IBM Power** | PEF | IBM POWER | Protected Execution Facility |
-| **ARM** | CCA (Confidential Compute Architecture) | In development | Realm VMs; Realm Management Monitor |
-| **RISC-V** | CoVE (Confidential VM Extensions) | Proposed | Open ISA equivalent |
-
-### AMD SEV-SNP vs Intel TDX
-
-| Feature | AMD SEV-SNP | Intel TDX |
-|---|---|---|
-| **Memory integrity** | Reverse Map Table (RMP) | MAC-based per-page integrity |
-| **Measurements** | Stored in AMD SP; in attestation report | RTMRs extended by OVMF; in event log |
-| **Attestation signing key** | VCEK (per chip + firmware) | IAK (Intel-managed Quoting Enclave) |
-| **vTPM support** | Via SVSM (inside TEE) or hypervisor-managed | Via TDX RTMR-based vTPM |
-| **Availability** | AWS, GCP, Azure, bare metal | Azure, GCP |
+| Vendor | Technology|
+|---|---|
+| **AMD** | SEV-SNP |
+| **AMD** | SEV-ES |
+| **AMD** | SEV |
+| **Intel** | TDX |
+| **IBM Z** | Secure Execution |
+| **IBM Power** | Protected Execution Facility (PEF) |
+| **ARM** | CCA (Confidential Compute Architecture) |
+| **RISC-V** | CoVE (Confidential VM Extensions) |
 
 ---
 
@@ -183,6 +177,8 @@ With all three major CPU vendors supporting CVMs, they are expected to dominate 
 | **Google Cloud** | Intel TDX | GA |
 | **AWS** | AMD SEV-SNP | GA |
 | **IBM Cloud** | IBM Secure Execution | GA |
+| **IBM Cloud** | AMD SEV-SNP | GA |
+| **IBM Cloud** | Intel TDX | GA |
 
 ---
 
@@ -194,4 +190,4 @@ CVMs are **Pillar 1** of the Confidential Computing stack. The CNCF Confidential
 - The CVM provides the hardware TEE boundary
 - Attestation of the CVM is the root of trust for all CoCo secrets
 
-The chapters that follow cover how CoCo and Trustee build on this foundation.
+The chapters that follow cover how CoCo build on this foundation.

@@ -24,10 +24,10 @@ project:
       file: chapters/02_use_cases.md
     - title: Building Blocks
       file: chapters/03_building_blocks.md
-    - title: The Trust Boundary Problem
-      file: chapters/04_trust_boundary.md
     - title: Remote Attestation
       file: chapters/05_remote_attestation.md
+    - title: The Trust Boundary Problem
+      file: chapters/04_trust_boundary.md
     - title: Three Pillars of Confidential Computing
       file: chapters/06_three_pillars.md
     - title: Confidential Virtual Machine (CVM)

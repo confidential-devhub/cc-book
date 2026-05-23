@@ -1,6 +1,6 @@
 # Building Blocks
 
-This section will take you through some of the foundational security primitives of confidential computing.
+This section will take you through some of the foundational elements of confidential computing.
 
 ## Root of Trust (RoT)
 
@@ -216,13 +216,12 @@ Measurements are available in the event log for remote attestation via TD Quote.
 | **Evidence** | PCR Quote + event log | Attestation report / event log |
 | **Secret unsealing** | PCR authorization in hardware | External authorization + policy |
 
-### Summary Comparison of Major TEE Technologies
+### Summary Comparison of x86 TEE Technologies
 
 | Feature | AMD SEV-SNP | Intel TDX | Intel SGX |
 |---|---|---|---|
 | **Type** | VM-based | VM-based | Process-based |
-| **Granularity** | Full VM | Full VM (Trust Domain) | Enclave (subset of process) |
+| **Granularity** | Full VM | Full VM | Enclave (subset of process) |
 | **App changes needed** | None | None | Yes (trust/untrust split) |
 | **Hypervisor in TCB** | Optional | Optional | N/A |
-| **Available on cloud** | AWS, GCP, Azure | Azure, GCP | AWS (Nitro Enclaves) |
-| **Attestation key** | VCEK (per chip+firmware) | IAK (Intel managed) | Intel SGX quote |
+| **Available on cloud** | AWS, GCP, Azure | Azure, GCP | AWS, Azure, GCP |

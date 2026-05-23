@@ -1,9 +1,8 @@
 # The Trust Boundary Problem
 
-With the building blocks in place — Root of Trust, measured boot, and TEEs — we can now ask the critical question: **do they actually protect tenants from the infrastructure they run on?**
+With the building blocks in place — Root of Trust, measured boot, and TEEs — we can now ask the critical question: **do they actually protect tenants (users) from the infrastructure they run on?**
 
 ## Trust Boundary in Virtualisation
-
 
 In traditional virtualisation, the provider fully controls everything below the guest VM — the hypervisor, host OS, device firmware, and hardware. This means the provider can:
 

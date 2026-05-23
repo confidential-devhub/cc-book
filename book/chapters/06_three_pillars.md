@@ -5,8 +5,8 @@ Confidential Computing in cloud-native environments is organized into three depl
 The three pillars:
 
 1. Confidential Virtual Machine — run a VM inside a TEE (the foundation)
-2. Confidential Container — run a Kubernetes Pod inside a CVM inside a TEE
-3. Confidential Cluster — run Kubernetes nodes themselves inside CVMs.
+2. Confidential Container — run a Kubernetes Pod inside a CVM
+3. Confidential Cluster — run Kubernetes nodes themselves inside CVMs
 
 ---
 
@@ -21,13 +21,6 @@ A **Confidential Virtual Machine** is a VM that runs inside a TEE. It is the fou
 - Remote attestation allows external parties to verify the CVM's state
 - TCB is reduced — you no longer need to trust the hypervisor or host OS
 
-| Technology | CPU Architecture | TCB includes Hypervisor? |
-|---|---|---|
-| AMD SEV-SNP | x86 (AMD EPYC) | Optional (depends on vTPM placement) |
-| Intel TDX | x86 (Intel Xeon) | Optional |
-| IBM Secure Execution | IBM Z/LinuxONE | No |
-| IBM PEF | IBM POWER | No |
-
 ---
 
 ## Pillar 2: Confidential Container (Pod)
@@ -37,8 +30,8 @@ A **Confidential Container** runs a Kubernetes Pod inside a CVM (which itself ru
 **Key properties:**
 
 - Each Pod gets its own CVM — strong isolation between Pods
-- The Kubernetes control plane (kubelet, containerd) is **outside the TEE** — it is untrusted
-- Container images are **downloaded inside the CVM**, not on the host
+- The Kubernetes control plane (kubelet, containerd/crio) is **outside the TEE** — it is untrusted
+- Container images are **downloaded inside the CVM**, not on the worker node.
 - Secrets are delivered via **remote attestation**, not via K8s Secrets in etcd
 - **Policy enforcement** controls what the K8s control plane can instruct the CVM to do
 
@@ -67,8 +60,10 @@ A **Confidential Cluster** runs Kubernetes **nodes** themselves inside CVMs (whi
 | **What's in the TEE** | Individual pods | Entire K8s nodes |
 | **K8s control plane** | Untrusted (on regular infra) | Trusted (inside CVMs) |
 | **Trust boundary** | Pod level | Cluster level |
+| **Admin Trust** | Infra and cluster admin are untrusted | Infra admin is untrusted |
+| **Multi-tenancy** | Since cluster admin is untrusted, each pod can belong to different tenant | Since cluster admin is trusted, it can't be used for multi-tenancy |
+| **Operation Type** | Day 2 Operation - can be deployed on existing K8s cluster | Day 1 Operation - requires new K8s cluster |
 | **Use case** | Workload isolation | Full cluster isolation |
-| **Complexity** | Medium | High |
 
 ---
 
@@ -76,13 +71,11 @@ A **Confidential Cluster** runs Kubernetes **nodes** themselves inside CVMs (whi
 
 | Requirement | Recommended Pillar |
 |---|---|
-| Protect a single sensitive VM | Pillar 1: CVM |
-| Run K8s pods with secret data, protect from infra admin | Pillar 2: Confidential Containers |
-| Protect from K8s cluster admin as well | Pillar 3: Confidential Cluster |
-| AI model serving (IP protection) | Pillar 2 (CoCo + KServe) |
-| Multi-party analytics | Pillar 2 or 3 depending on scale |
+| Protect standalone code | Pillar 1: CVM |
+| Protect K8s pods from each other and cluster/infra admin | Pillar 2: Confidential Containers |
+| Protect entire K8s cluster from infra admin | Pillar 3: Confidential Cluster |
 
 :::{admonition} Practical Recommendation
 :class: tip
-For most organizations starting with Confidential Computing, **Pillar 2 (Confidential Containers)** offers the best balance of security, practicality, and ecosystem support. It integrates with existing Kubernetes workflows while protecting workloads from both the cloud provider and infrastructure administrators.
+For most organizations starting with Confidential Computing, **Pillar 2 (Confidential Containers)** offers the best balance of security, practicality, and ecosystem support. It integrates with existing Kubernetes workflows while protecting workloads from both the cluster and infrastructure administrators.
 :::

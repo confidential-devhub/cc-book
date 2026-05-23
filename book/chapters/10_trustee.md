@@ -1,6 +1,6 @@
 # Trustee
 
-[Trustee](https://github.com/confidential-containers/trustee) is the remote attestation and secret brokering infrastructure for CNCF Confidential Containers. It is the component that makes the security guarantees of CoCo real: a CVM cannot access secrets until Trustee verifies it is running the expected, unmodified software.
+[Trustee](https://github.com/confidential-containers/trustee) is the remote attestation and secret brokering infrastructure for CNCF Confidential Containers.
 
 Trustee implements the **Relying Party** and **Verifier** roles from the IETF RATS architecture, and consists of three sub-components:
 
@@ -9,6 +9,12 @@ Trustee implements the **Relying Party** and **Verifier** roles from the IETF RA
 | **Key Broker Service (KBS)** | Relying Party | Receives attestation requests; releases resources after verification |
 | **Attestation Service (AS)** | Verifier | Verifies TEE evidence against reference values |
 | **Reference Value Provider (RVPS)** | Reference Value Provider | Supplies golden measurements for comparison |
+
+[Guest-components](https://github.com/confidential-containers/guest-components) is the repository for the **Attester** role, which is implemented by the **Attestation Agent** running inside the TEE (CVM). The AA is responsible for sending the evidence (claims) from the TEE to prove the trustworthiness of the environment.
+
+There are also few other helper components inside the TEE:
+
+- Confidential Data Hub (CDH): The CDH facilitates secure key retrieval for kata-agent and applications. It also provides additional services, such as secure mount for external storage or key management client services to retrieve keys directly from external Key Management Services. The secure mount service enables mounting of encrypted storage inside the TEE. The CDH APIs are exposed to the applications via a local API Server.
 
 ---
 
@@ -40,22 +46,17 @@ Two attestation models are supported:
 
 **Background Check Model** — the default CoCo mode. The CVM sends evidence directly to Trustee; Trustee verifies and releases the secret.
 
-```{figure} ../images/page_67_1.png
+```{figure} ../images/trustee_backgroud_check.png
 :alt: CoCo Attestation — Background Check Model
 :align: center
 ```
 
 **Passport Check Model** — the CVM obtains a reusable attestation token from the Verifier and presents it to one or more Relying Parties directly. Useful when many services need to verify the same CVM.
 
-```{figure} ../images/page_67_2.png
+```{figure} ../images/trustee_passport.png
 :alt: CoCo Attestation — Passport Check Model
 :align: center
 ```
-
-| Model | Flow | Use When |
-|---|---|---|
-| **Background Check** | CVM → Evidence → AS → Result → KBS → Secret → CVM | Default CoCo mode |
-| **Passport Check** | CVM → Evidence → AS → Token → CVM → Token → KBS → Secret | Many Relying Parties; token reuse |
 
 ---
 
@@ -63,24 +64,19 @@ Two attestation models are supported:
 
 Inside the pod, the **Confidential Data Hub (CDH)** exposes a local HTTP endpoint for secret retrieval. All requests trigger attestation if not already performed, and return the secret only on success.
 
-```{figure} ../images/page_68.png
-:alt: CoCo Workload APIs
-:align: center
-```
+### Secret Resource Release API
 
-**Secret Resource Release API:**
-```bash
-GET http://127.0.0.1:8006/cdh/resource/{repository}/{type}/{tag}
-```
+The secret resource release API endpoint is available at `http://127.0.0.1:8006/cdh/resource/` inside the pod.
 
-**Example — retrieve a decryption key stored in KBS:**
+The secret resource must be referenceable under the following path: `{repository}/{type}/{tag}`
+
+**Example — retrieve a decryption key stored in KBS under `default/enckey/key.pem`:**
+
 ```bash
 curl http://127.0.0.1:8006/cdh/resource/default/enckey/key.pem
 ```
 
----
-
-## Sealed Secrets
+### Sealed Secrets
 
 A **sealed secret** is a Kubernetes Secret whose value is encrypted and can only be decrypted inside a TEE after successful attestation. The encrypted form is stored in etcd — the actual plaintext never exists outside the TEE.
 
@@ -90,7 +86,8 @@ A **sealed secret** is a Kubernetes Secret whose value is encrypted and can only
 ```
 
 **Flow:**
-1. Operator creates a sealed secret config pointing to a KBS resource
+
+1. User creates a sealed secret config pointing to a KBS resource
 2. The config is encoded as a sealed secret value and stored as a K8s Secret — etcd holds only the encrypted form
 3. When the pod runs inside the TEE, CDH attests to Trustee and retrieves the real secret
 4. The plaintext value is injected into the container as an env var or volume mount
@@ -107,4 +104,4 @@ A **sealed secret** is a Kubernetes Secret whose value is encrypted and can only
 | Reference Value Provider (RVPS) | Reference Value Provider |
 | Key Broker Service (KBS) | Relying Party |
 | CVM attestation report | Evidence |
-| Attestation Result (EAR/AR4SI) | Attestation Result |
+| Attestation Result | Attestation Result |
