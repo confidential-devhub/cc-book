@@ -1,0 +1,7 @@
+/* Force Mermaid diagrams to always render on a white background */
+.mermaid svg,
+svg[id^="mermaid-"] {
+  background-color: #ffffff !important;
+  border-radius: 6px;
+  padding: 12px;
+}

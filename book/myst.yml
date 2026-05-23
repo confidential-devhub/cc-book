@@ -30,6 +30,8 @@ project:
       file: chapters/05_remote_attestation.md
     - title: Three Pillars of Confidential Computing
       file: chapters/06_three_pillars.md
+    - title: Confidential Virtual Machine (CVM)
+      file: chapters/07_confidential_vms.md
     - title: Confidential Containers (CoCo)
       file: chapters/09_confidential_containers.md
     - title: Trustee
@@ -42,3 +44,5 @@ project:
       file: chapters/13_references.md
 site:
   template: book-theme
+  options:
+    style: custom.css
