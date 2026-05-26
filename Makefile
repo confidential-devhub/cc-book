@@ -21,6 +21,7 @@ install:
 	uv sync
 
 build:
+	uv run python generate_llms.py
 	cd $(BOOK_DIR) && uv run jupyter-book build --html
 
 serve:
