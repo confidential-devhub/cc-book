@@ -13,7 +13,7 @@ The content is structured for engineers, architects, and security practitioners 
 
 - **Why** confidential computing exists and what problems it solves
 - **What** the core building blocks are (TEEs, attestation, measured boot)
-- **How** production systems like Kata Containers and CNCF Confidential Containers (CoCo) are built
+- **How** production systems using CNCF Confidential Containers (CoCo) are built
 - **Where** to apply it — use cases, integrations, and deployment topologies
 
 ## Book Structure

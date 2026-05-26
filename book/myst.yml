@@ -2,7 +2,7 @@
 version: 1
 project:
   title: Confidential Computing Deep Dive
-  description: A comprehensive guide to Confidential Computing, TEEs, Kata Containers, and CNCF Confidential Containers.
+  description: A comprehensive guide to Confidential Computing, TEEs, and CNCF Confidential Containers.
   authors:
     - name: Pradipta Banerjee
       affiliations:
